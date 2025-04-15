@@ -1,0 +1,11 @@
+#Installation de graphviz
+sudo apt update
+sudo apt install terraform graphviz
+
+
+terraform graph > graph.dot
+dot -Tpng graph.dot -o graph.png  ou dot -Tsvg graph.dot -o graph.svg
+
+
+commande complete: terraform graph | dot -Tsvg > graph.svg
+

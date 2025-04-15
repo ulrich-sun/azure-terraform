@@ -1,0 +1,6 @@
+Creation d'un compte azure 
+-https://go.microsoft.com/fwlink/?linkid=2227353&clcid=0x409&l=en-us
+
+
+Telecharger IDE vscode:
+-https://code.visualstudio.com/download
