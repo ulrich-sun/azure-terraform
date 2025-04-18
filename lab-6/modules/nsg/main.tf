@@ -1,7 +1,7 @@
-resource "azurerm_network_security_group" "tfeazytraining-nsg" {
-  name                = "my-eazytraining-nsg"
-  location            = azurerm_resource_group.tfeazytraining.location
-  resource_group_name = azurerm_resource_group.tfeazytraining-gp.name
+resource "azurerm_network_security_group" "nsg" {
+  name                = var.nsg_name
+  location            = var.location 
+  resource_group_name = var.resource_group_name
 
   security_rule {
     name                       = "HTTP"
@@ -15,8 +15,8 @@ resource "azurerm_network_security_group" "tfeazytraining-nsg" {
     destination_address_prefix = "*"
   }
 
-    security_rule {
-    name                       = "HTTP"
+  security_rule {
+    name                       = "SSH"
     priority                   = 1001
     direction                  = "Inbound"
     access                     = "Allow"

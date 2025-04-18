@@ -1,7 +1,8 @@
-output "rg-vm-location" {
-   value = azurerm_resource_group.tfeazytraining-gp.location
+output "rg_name" {
+  value = azurerm_resource_group.rg.name
+  
 }
-
-output "rg-vm-name" {
-   value = azurerm_resource_group.tfeazytraining-gp.name
+output "rg_location" {
+  value = azurerm_resource_group.rg.location
+  
 }

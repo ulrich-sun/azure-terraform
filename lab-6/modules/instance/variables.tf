@@ -1,3 +1,8 @@
+variable "instance_template" {
+  type        = string
+  description = "Template for the webserver"
+  default     = "Standard_D2_v2"
+}
 variable "location" {
   type        = string
   description = "The location where the resources will be created"
@@ -9,15 +14,9 @@ variable "resource_group_name" {
   description = "The name of the resource group"
   default     = "my-eazytraining-rg"
 }
-variable "public_ip_id" {
+variable "network_interface_id" {
   type        = string
-  description = "The ID of the public IP to associate with the instance"
-  default     = ""
-  
-}
-variable "nsg_id" {
-  type        = string
-  description = "The ID of the network security group to associate with the instance"
+  description = "The ID of the network interface to associate with the instance"
   default     = ""
   
 }

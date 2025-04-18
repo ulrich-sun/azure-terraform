@@ -1,17 +1,9 @@
-variable "istest" {
-  description = "Détermine si nous sommes en environnement de test"
-  type        = bool
-  default     = true
-}
 
 locals {
   # Si test, liste de 3 machines dev, sinon une seule prod
   vm_names = var.istest ? ["dev-vm-1", "dev-vm-2", "dev-vm-3"] : ["prod-vm"]
 }
 
-provider "azurerm" {
-  features {}
-}
 
 resource "azurerm_resource_group" "rg" {
   name     = "rg-tp2"
