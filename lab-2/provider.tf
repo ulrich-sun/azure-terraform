@@ -1,14 +1,13 @@
 terraform {
- required_providers {
+  required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "=3.0.0"
+      version = "=4.26.0"
     }
   }
-  }
-
-# features est obligatoire dans les versions récentes du fournisseur azurerm et doit être présent, même si vide. Ce bloc indique à Terraform que le fournisseur Azure est correctement configuré pour être utilisé.
-provider "azurerm" {
-  features {}
 }
- 
+provider "azurerm" {
+  features {
+  }
+  resource_provider_registrations = "none"
+}

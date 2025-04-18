@@ -1,21 +1,10 @@
+# Resource Group
 resource "azurerm_resource_group" "tfeazytraining-gp" {
   name     = "my-eazytraining-rg"
   location = "West Europe"
 }
 
-# Créer une IP publique
-resource "azurerm_public_ip" "tfeazytraining" {
-  name                = "my-eazytraining-public-ip"
-  location            = azurerm_resource_group.tfeazytraining-gp.location
-  resource_group_name = azurerm_resource_group.tfeazytraining-gp.name
-  allocation_method   = "Static"
-
-  tags = {
-    environment = "my-eazytraining-env"
-  }
-}
-
-# Créer un réseau virtuel
+# Virtual Network
 resource "azurerm_virtual_network" "tfeazytraining-vnet" {
   name                = "my-eazytraining-vnet"
   location            = azurerm_resource_group.tfeazytraining-gp.location
@@ -27,7 +16,7 @@ resource "azurerm_virtual_network" "tfeazytraining-vnet" {
   }
 }
 
-# Créer un sous-réseau
+# Subnet
 resource "azurerm_subnet" "tfeazytraining-subnet" {
   name                 = "my-eazytraining-subnet"
   resource_group_name  = azurerm_resource_group.tfeazytraining-gp.name
@@ -35,18 +24,42 @@ resource "azurerm_subnet" "tfeazytraining-subnet" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
-# Créer un groupe de sécurité réseau
-resource "azurerm_network_security_group" "tfeazytraining-nsg" {
-  name                = "my-eazytraining-nsg"
+# Public IP
+resource "azurerm_public_ip" "tfeazytraining-ip" {
+  name                = "my-eazytraining-public-ip"
   location            = azurerm_resource_group.tfeazytraining-gp.location
   resource_group_name = azurerm_resource_group.tfeazytraining-gp.name
+  allocation_method   = "Dynamic"
 
   tags = {
     environment = "my-eazytraining-env"
   }
 }
 
-# Créer une interface réseau
+# Network Security Group
+resource "azurerm_network_security_group" "tfeazytraining-nsg" {
+  name                = "my-eazytraining-nsg"
+  location            = azurerm_resource_group.tfeazytraining-gp.location
+  resource_group_name = azurerm_resource_group.tfeazytraining-gp.name
+
+  security_rule {
+    name                       = "SSH"
+    priority                   = 1001
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  tags = {
+    environment = "my-eazytraining-env"
+  }
+}
+
+# Network Interface
 resource "azurerm_network_interface" "tfeazytraining-vnic" {
   name                = "my-eazytraining-nic"
   location            = azurerm_resource_group.tfeazytraining-gp.location
@@ -56,7 +69,7 @@ resource "azurerm_network_interface" "tfeazytraining-vnic" {
     name                          = "my-eazytraining-nic-ip"
     subnet_id                     = azurerm_subnet.tfeazytraining-subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.tfeazytraining.id
+    public_ip_address_id          = azurerm_public_ip.tfeazytraining-ip.id
   }
 
   tags = {
@@ -64,13 +77,13 @@ resource "azurerm_network_interface" "tfeazytraining-vnic" {
   }
 }
 
-# Associer un groupe de sécurité réseau à l'interface
+# Associate NSG with NIC
 resource "azurerm_network_interface_security_group_association" "tfeazytraining-assoc" {
   network_interface_id      = azurerm_network_interface.tfeazytraining-vnic.id
   network_security_group_id = azurerm_network_security_group.tfeazytraining-nsg.id
 }
 
-# Créer une machine virtuelle
+# Linux Virtual Machine
 resource "azurerm_linux_virtual_machine" "tfeazytraining-vm" {
   name                            = "my-eazytraining-vm"
   location                        = azurerm_resource_group.tfeazytraining-gp.location
@@ -84,17 +97,17 @@ resource "azurerm_linux_virtual_machine" "tfeazytraining-vm" {
 
   source_image_reference {
     publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
+    offer     = "0001-com-ubuntu-server-focal"
+    sku       = "20_04-lts"
     version   = "latest"
   }
 
   os_disk {
     name                 = "my-eazytraining-os-disk"
-    storage_account_type = "Standard_LRS"
     caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
   }
-  
+
   tags = {
     environment = "my-eazytraining-env"
   }
