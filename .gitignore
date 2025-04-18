@@ -1,0 +1,33 @@
+# fichiers d'état Terraform
+*.tfstate
+*.tfstate.backup
+
+# crash logs
+crash.log
+
+# fichiers de plan
+*.tfplan
+
+# fichier de variables sensibles (si tu les crées)
+terraform.tfvars
+*.tfvars
+
+# fichiers de lock (liés au provider)
+.terraform.lock.hcl
+
+# répertoire d'initialisation
+.terraform/
+
+# fichiers de sortie éventuels
+*.log
+*.out
+
+# pour les IDE
+.vscode/
+.idea/
+*.swp
+*.bak
+
+# fichiers système
+.DS_Store
+Thumbs.db
