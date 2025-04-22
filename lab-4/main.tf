@@ -54,8 +54,8 @@ resource "azurerm_network_security_group" "tfeazytraining-nsg" {
   }
 
   security_rule {
-    name                       = "HTTP"
-    priority                   = 1001
+    name                       = "SSH"
+    priority                   = 1002
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
@@ -119,8 +119,8 @@ resource "azurerm_linux_virtual_machine" "tfeazytraining-vm" {
     caching              = "ReadWrite"
   }
   provisioner "file" {
-    source      = "scripts/install.sh"              # fichier local
-    destination = "/home/azureuser/install.sh"      # chemin distant
+    source      = "scripts/install.sh"         # fichier local
+    destination = "/home/azureuser/install.sh" # chemin distant
   }
 
   provisioner "remote-exec" {
@@ -154,7 +154,7 @@ resource "azurerm_storage_account" "eazytraining-sa" {
 
 resource "azurerm_storage_container" "eazytraining-container" {
   name                  = "eazytraining-container"
-  storage_account_name  = azurerm_storage_account.eazytraining-sa.name
+  storage_account_id = azurerm_storage_account.eazytraining-sa.id
   container_access_type = "private"
 }
 

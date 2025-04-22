@@ -1,0 +1,69 @@
+Création des ressources Azure pour le backend distant Terraform
+================================================================
+
+Ce script contient les commandes Azure CLI nécessaires pour créer les ressources
+utilisées dans le bloc backend suivant :
+
+backend "azurerm" {
+  resource_group_name  = "my-terraform-rg"
+  storage_account_name = "azure-backend-<votre prénom>"
+  container_name       = "eazytraining-container"
+  key                  = "terraform.tfstate"
+}
+
+Étapes à suivre :
+-----------------
+
+1. Connexion à Azure (si ce n’est pas encore fait)
+--------------------------------------------------
+az login
+
+2. Création du groupe de ressources
+-----------------------------------
+az group create --name my-terraform-rg --location "France Central"
+
+3. Création du compte de stockage Azure
+---------------------------------------
+az storage account create --name myeazytrainingstorage --resource-group my-terraform-rg --location "France Central" --sku Standard_LRS
+
+4. Création du conteneur dans le compte de stockage
+----------------------------------------------------
+az storage container create --name eazytraining-container --account-name myeazytrainingstorage
+
+Votre backend distant est maintenant prêt à être utilisé avec Terraform !
+
+
+Initialisation
+--------------
+Lancez la commande suivante pour initialiser Terraform avec le backend :
+
+terraform init
+
+Planification
+-------------
+Cette commande permet de visualiser les actions que Terraform va effectuer sans les appliquer immédiatement :
+
+terraform plan
+
+Application
+-----------
+Pour appliquer réellement les changements décrits dans vos fichiers .tf (création des ressources dans Azure), utilisez :
+
+terraform apply
+
+Notes :
+-------
+- Le fichier .tfstate sera stocké à distance dans Azure Blob Storage.
+- Vous devez disposer des autorisations nécessaires pour interagir avec les ressources Azure.
+- Vous pouvez modifier le nom de la clé (key) si vous travaillez sur plusieurs environnements ou projets.
+
+Destruction des ressources
+--------------------------
+
+Pour supprimer les ressources créées, vous pouvez exécuter les commandes suivantes :
+
+Via Terraform :
+terraform destroy -auto-approve 
+
+Via Azure CLI :
+az group delete --name tfeazytraining-rg --yes --no-wait

@@ -1,0 +1,89 @@
+Mise en place d’un backend distant Terraform avec Azure Storage
+===============================================================
+
+Ce guide vous accompagne dans la création des ressources nécessaires
+pour utiliser Azure Storage comme backend distant pour vos fichiers
+terraform.tfstate.
+
+Prérequis :
+-----------
+- Azure CLI installé et connecté (az login)
+- Terraform installé
+- Abonnement Azure actif
+
+Étapes :
+--------
+
+1. Création du groupe de ressources
+-----------------------------------
+Commande :
+az group create --name tfeazytraining-rg --location "West Europe"
+
+Description :
+Crée un groupe de ressources nommé "tfeazytraining-rg" dans la région "France Central".
+
+
+2. Création du compte de stockage Azure
+---------------------------------------
+Commande :
+az storage account create --name eazytrainingstorage23 --resource-group tfeazytraining-rg --location "West Europe" --sku Standard_LRS
+
+Description :
+Crée un compte de stockage nommé "eazytrainingstorage23". 
+Attention : le nom du compte doit être unique dans tout Azure.
+
+
+3. Création du conteneur de stockage (blob)
+-------------------------------------------
+Commande :
+az storage container create --name eazytraining-container --account-name eazytrainingstorage23
+
+Description :
+Crée un conteneur nommé "eazytraining-container" dans le compte de stockage. 
+C’est là que le fichier terraform.tfstate sera stocké.
+
+Configuration Terraform (extrait à mettre dans le fichier .tf)
+--------------------------------------------------------------
+terraform {
+  backend "azurerm" {
+    resource_group_name   = "tfeazytraining-rg"
+    storage_account_name  = "eazytrainingstorage23"
+    container_name        = "eazytraining-container"
+    key                   = "lab-5.tfstate"
+  }
+}
+
+Initialisation
+--------------
+Lancez la commande suivante pour initialiser Terraform avec le backend :
+
+terraform init
+
+Planification
+-------------
+Cette commande permet de visualiser les actions que Terraform va effectuer sans les appliquer immédiatement :
+
+terraform plan
+
+Application
+-----------
+Pour appliquer réellement les changements décrits dans vos fichiers .tf (création des ressources dans Azure), utilisez :
+
+terraform apply
+
+Notes :
+-------
+- Le fichier .tfstate sera stocké à distance dans Azure Blob Storage.
+- Vous devez disposer des autorisations nécessaires pour interagir avec les ressources Azure.
+- Vous pouvez modifier le nom de la clé (key) si vous travaillez sur plusieurs environnements ou projets.
+
+Destruction des ressources
+--------------------------
+
+Pour supprimer les ressources créées, vous pouvez exécuter les commandes suivantes :
+
+Via Terraform :
+terraform destroy -auto-approve 
+
+Via Azure CLI :
+az group delete --name tfeazytraining-rg --yes --no-wait
