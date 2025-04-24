@@ -42,7 +42,7 @@ resource "azurerm_network_security_group" "tfeazytraining-nsg" {
   resource_group_name = azurerm_resource_group.tfeazytraining-gp.name
 
   security_rule {
-    name                       = "HTTP"
+    name                       = "Allow-HTTP"
     priority                   = 1001
     direction                  = "Inbound"
     access                     = "Allow"
@@ -54,8 +54,8 @@ resource "azurerm_network_security_group" "tfeazytraining-nsg" {
   }
 
   security_rule {
-    name                       = "HTTP"
-    priority                   = 1001
+    name                       = "Allow-SSH"
+    priority                   = 1000
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"

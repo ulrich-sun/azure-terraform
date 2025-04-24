@@ -10,6 +10,6 @@ resource "azurerm_storage_account" "eazytraining-sa" {
 
 resource "azurerm_storage_container" "eazytraining-container" {
   name                  = "eazytraining-container"
-  storage_account_id  = azurerm_storage_account.eazytraining-sa.id
+  storage_account_name = azurerm_storage_account.eazytraining-sa.name
   container_access_type = "private"
 }

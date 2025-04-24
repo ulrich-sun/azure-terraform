@@ -1,27 +1,31 @@
 module "network" {
   source = "../modules/network"
-  rg-name = module.rg.rg-vm-name
-  rg-location = module.rg.rg-vm-location
+  location            = module.rg.rg_location
+  resource_group_name = module.rg.rg_name
+  public_ip_id        = module.ip.public_ip_id
+  nsg_id              = module.nsg.nsg_id
 }
 
-module "vm" {
-  source    = "../modules/vm"
-  subnet_id = module.network.output_subnet_id
-  instance_template = "Standard_D2_v2"
-  g-name = module.rg.rg-vm-name
-  rg-location = module.rg.rg-vm-location
+module "instance" {
+  source    = "../modules/instance"
+  location             = module.rg.rg_location
+  resource_group_name  = module.rg.rg_name
+  network_interface_id = module.network.network_interface_id
+  instance_template    = var.instance_template
 }
 
 module "nsg" {
   source = "../modules/nsg"
-  rg-name = module.rg.rg-vm-name
-  rg-location = module.rg.rg-vm-location
+  location            = module.rg.rg_location
+  resource_group_name = module.rg.rg_name
+  nsg_name            = var.nsg_name
 }
 
 module "storage" {
   source = "../modules/storage"
-  rg-name = module.rg.rg-vm-name
-  rg-location = module.rg.rg-vm-location
+  location             = module.rg.rg_location
+  resource_group_name  = module.rg.rg_name
+  storage_account_name = var.storage_account_name
 }
 
 module "rg" {
@@ -30,6 +34,6 @@ module "rg" {
 
 module "ip" {
   source = "../modules/ip"
-  rg-name = module.rg.rg-vm-name
-  rg-location = module.rg.rg-vm-location
+  location            = module.rg.rg_location
+  resource_group_name = module.rg.rg_name
 }

@@ -19,4 +19,22 @@ terraform apply -auto-approve
 
 une fois le labs termine : terraform destroy -auto-approve 
 
+Tester la dispo de l'image dans ta région
 
+az vm image list \
+  --publisher Canonical \
+  --offer UbuntuServer \
+  --all \
+  --output table --location westeurope
+
+Tu peux aussi refaire la commande pour chercher uniquement les Ubuntu 20.04 :
+
+az vm image list \
+  --publisher Canonical \
+  --offer UbuntuServer \
+  --sku 20_04* \
+  --location <ta-région> \
+  --all \
+  --output table
+  
+Remplace <ta-région> par la région exacte que tu utilises (ex. westeurope, northeurope, francecentral, etc.)

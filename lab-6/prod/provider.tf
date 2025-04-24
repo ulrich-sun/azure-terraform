@@ -7,7 +7,7 @@ terraform {
   }
   backend "azurerm" {
     resource_group_name  = "my-terraform-rg"
-    storage_account_name = "azure-backend-<votre prénom>"
+    storage_account_name = "azurebackendanselme"
     container_name       = "backend"
     key                  = "terraform.tfstate"
   }
@@ -15,5 +15,7 @@ terraform {
 
 
 provider "azurerm" {
-  features {}
+  features {
+  }
+  
 }

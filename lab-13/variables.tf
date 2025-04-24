@@ -6,3 +6,9 @@ variable "instance_template" {
   description = "Template for the webserver"
   default     = "Standard_D2_v2"
 }
+
+variable "location" {
+  type        = string
+  description = "Location for the resources"
+  default     = "westeurope"
+}

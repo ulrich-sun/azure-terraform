@@ -49,6 +49,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   ]
 
   admin_password = "P@ssword1234!" # ⚠️ à ne jamais faire en prod
+  disable_password_authentication = false
 
   os_disk {
     caching              = "ReadWrite"
@@ -59,7 +60,8 @@ resource "azurerm_linux_virtual_machine" "vm" {
   source_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
-    sku       = "20_04-lts-gen2"
-    version   = "latest"
+    sku       = "19_10-daily-gen2"
+    version   = "19.10.202007100"
   }
 }
+

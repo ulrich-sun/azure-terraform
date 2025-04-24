@@ -1,6 +1,3 @@
-provider "azurerm" {
-  features {}
-}
 
 resource "azurerm_resource_group" "rg" {
   name     = "rg-tp2"
@@ -57,7 +54,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   source_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
-    sku       = "20_04-lts"
-    version   = "latest"
+    sku       = "19_10-daily-gen2"
+    version   = "19.10.202007100"
   }
 }
