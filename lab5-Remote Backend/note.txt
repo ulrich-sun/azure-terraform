@@ -1,0 +1,49 @@
+# Dans ce labs vous aurez a realiser deux initialiations
+
+options 1:
+la premiere sera dans le dossier backend pour initialiations du backend dans un groupe de ressource se trouvant dans la meme region azure 
+la deuxieme pour votre stack complete 
+
+
+cd backend/
+terraform init 
+terraform fmt -recursive 
+terraform validate
+terraform apply -auto-approve 
+
+cd ../
+terraform init -migrate
+terraform fmt -recursive 
+terraform validate
+terraform apply -auto-approve 
+
+
+
+
+
+options 2:
+utiliser les commandes azure pour creer le stockage correspondant:
+az group create --name my-terraform-rg --location westeurope
+
+az storage account create \
+  --name azurebackend<prenom> \
+  --resource-group my-terraform-rg \
+  --location westeurope \
+  --sku Standard_LRS
+
+az storage container create \
+  --name backend \
+  --account-name azurebackend<prenom>
+
+
+pour supprimer 
+
+az storage container delete \
+  --name backend \
+  --account-name azurebackend<prenom>
+
+az storage account delete \
+  --name azurebackend<prenom> \
+  --resource-group my-terraform-rg
+
+az group delete --name my-terraform-rg --yes --no-wait

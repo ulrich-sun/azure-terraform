@@ -1,0 +1,43 @@
+utilisation de terraform console
+
+ici il faut tester des fonctions terraform en utilisation la console terraform 
+avoir un aprecu d'utilisation des fonctions predefinis par terraform avant leur utilisation dans le code terraform
+
+formatdate(format, timestamp)
+exemple:
+
+timestamp()
+exemple
+output "current_time" {
+  value = timestamp() 
+}
+
+file(path)
+exemple:
+variable "user_data" {
+  default = file("${path.module}/scripts/init.sh")
+}
+
+
+
+lookup(map, key, default)
+variable "amis" {
+  default = {
+    "us-east-1" = "ami-123"
+    "eu-west-1" = "ami-456"
+  }
+}
+
+output "my_ami" {
+  value = lookup(var.amis, "eu-west-1", "ami-default") 
+}
+
+
+element(list, index)
+variable "zones" {
+  default = ["zone1", "zone2", "zone3"]
+}
+
+output "my_zone" {
+  value = element(var.zones, 5) # -> "zone3" (5 % 3 = 2)
+}

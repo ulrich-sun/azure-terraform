@@ -1,0 +1,3 @@
+la creation d'un storage account doit avoir dans son nom minimum 3 caracteres et maximum 24 
+en minuscule + des chiffres 
+
