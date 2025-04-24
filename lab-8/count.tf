@@ -9,11 +9,31 @@ resource "azurerm_public_ip" "tfeazytraining-ip" {
   name                = "my-eazytraining-public-ip-${count.index}"
   location            = azurerm_resource_group.tfeazytraining-gp.location
   resource_group_name = azurerm_resource_group.tfeazytraining-gp.name
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
+  sku                 = "Standard"
 
   tags = {
     environment = "my-eazytraining-env"
   }
+}
+
+resource "azurerm_virtual_network" "tfeazytraining-vnet" {
+  name                = "my-eazytraining-vnet"
+  location            = azurerm_resource_group.tfeazytraining-gp.location
+  resource_group_name = azurerm_resource_group.tfeazytraining-gp.name
+  address_space       = ["10.0.0.0/16"]
+
+  tags = {
+    environment = "my-eazytraining-env"
+  }
+  depends_on = [ azurerm_resource_group.tfeazytraining-gp ]
+}
+
+resource "azurerm_subnet" "tfeazytraining-subnet" {
+  name                 = "my-eazytraining-subnet"
+  resource_group_name  = azurerm_resource_group.tfeazytraining-gp.name
+  virtual_network_name = azurerm_virtual_network.tfeazytraining-vnet.name
+  address_prefixes     = ["10.0.2.0/24"]
 }
 
 # Network Interfaces
@@ -34,6 +54,30 @@ resource "azurerm_network_interface" "tfeazytraining-vnic" {
     environment = "my-eazytraining-env"
   }
 }
+
+# Network Security Group
+resource "azurerm_network_security_group" "tfeazytraining-nsg" {
+  name                = "my-eazytraining-nsg"
+  location            = azurerm_resource_group.tfeazytraining-gp.location
+  resource_group_name = azurerm_resource_group.tfeazytraining-gp.name
+
+  security_rule {
+    name                       = "SSH"
+    priority                   = 1001
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  tags = {
+    environment = "my-eazytraining-env"
+  }
+}
+
 
 # NSG association
 resource "azurerm_network_interface_security_group_association" "tfeazytraining-assoc" {
@@ -57,9 +101,9 @@ resource "azurerm_linux_virtual_machine" "tfeazytraining-vm" {
 
   source_image_reference {
     publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-focal"
-    sku       = "20_04-lts"
-    version   = "latest"
+    offer     = "UbuntuServer"
+    sku       = "19_10-daily-gen2"
+    version   = "19.10.202007100"
   }
 
   os_disk {

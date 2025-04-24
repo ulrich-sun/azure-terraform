@@ -1,4 +1,5 @@
 terraform {
+  required_version = ">= 1.11.4"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -9,11 +10,5 @@ terraform {
 provider "azurerm" {
   features {
   }
-  resource_provider_registrations = "none"
-}
-
-
-resource "azurerm_resource_group" "rg" {
-  name     = "rg-tp2"
-  location = "West Europe"
+  
 }

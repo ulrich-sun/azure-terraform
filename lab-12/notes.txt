@@ -1,5 +1,6 @@
 utilisation de terraform console
 
+je ne comprends pas les instructions du lab
 
 formatdate(format, timestamp)
 exemple:
@@ -7,7 +8,7 @@ exemple:
 timestamp()
 exemple
 output "current_time" {
-  value = timestamp() # -> "2025-04-15T11:37:24Z"
+  value = timestamp() 
 }
 
 file(path)
@@ -27,7 +28,7 @@ variable "amis" {
 }
 
 output "my_ami" {
-  value = lookup(var.amis, "eu-west-1", "ami-default") # -> "ami-456"
+  value = lookup(var.amis, "eu-west-1", "ami-default") 
 }
 
 

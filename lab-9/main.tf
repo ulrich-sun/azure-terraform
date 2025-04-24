@@ -14,9 +14,10 @@ resource "azurerm_resource_group" "tfeazytraining-gp" {
 
 # Create a Virtual Network
 resource "azurerm_virtual_network" "tfeazytraining-vnet" {
-  name                = "my-eazytraining-vnet"
-  location            = azurerm_resource_group.tfeazytraining-gp.location
-  resource_group_name = azurerm_resource_group.tfeazytraining-gp.name
+  for_each            = local.regions
+  name                = "my-eazytraining-vnet${each.key}"
+  location            = azurerm_resource_group.tfeazytraining-gp[each.key].location
+  resource_group_name = azurerm_resource_group.tfeazytraining-gp[each.key].name
   address_space       = ["10.0.0.0/16"]
 
   tags = {
@@ -26,35 +27,51 @@ resource "azurerm_virtual_network" "tfeazytraining-vnet" {
 
 # Create a Subnet in the Virtual Network
 resource "azurerm_subnet" "tfeazytraining-subnet" {
+  for_each            = local.regions
   name                 = "my-eazytraining-subnet"
-  resource_group_name  = azurerm_resource_group.tfeazytraining-gp.name
-  virtual_network_name = azurerm_virtual_network.tfeazytraining-vnet.name
+  resource_group_name  = azurerm_resource_group.tfeazytraining-gp[each.key].name
+  virtual_network_name = azurerm_virtual_network.tfeazytraining-vnet[each.key].name
   address_prefixes     = ["10.0.2.0/24"]
 }
 
 
 # Create a Network Security Group and rule
 resource "azurerm_network_security_group" "tfeazytraining-nsg" {
-  name                = "my-eazytraining-nsg"
-  location            = azurerm_resource_group.tfeazytraining.location
-  resource_group_name = azurerm_resource_group.tfeazytraining-gp.name
+  for_each = local.regions
+  name                = "my-eazytraining-nsg-${each.key}"
+  location            = azurerm_resource_group.tfeazytraining-gp[each.key].location
+  resource_group_name = azurerm_resource_group.tfeazytraining-gp[each.key].name
 
   tags = {
     environment = "my-eazytraining-env"
   }
 }
 
+resource "azurerm_public_ip" "tfeazytraining" {
+  for_each = local.regions
+  name                = "my-eazytraining-public-ip-${each.key}"
+  location            = azurerm_resource_group.tfeazytraining-gp[each.key].location
+  resource_group_name = azurerm_resource_group.tfeazytraining-gp[each.key].name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+
+  tags = {
+    environment = "my-eazytraining-region-${each.key}"
+  }
+}
+
 # Create a Network Interface
 resource "azurerm_network_interface" "tfeazytraining-vnic" {
+  for_each = local.regions
   name                = "my-eazytraining-nic"
-  location            = azurerm_resource_group.tfeazytraining-gp.location
-  resource_group_name = azurerm_resource_group.tfeazytraining-gp.name
+  location            = azurerm_resource_group.tfeazytraining-gp[each.key].location
+  resource_group_name = azurerm_resource_group.tfeazytraining-gp[each.key].name
 
   ip_configuration {
     name                          = "my-eazytraining-nic-ip"
-    subnet_id                     = azurerm_subnet.tfeazytraining-subnet.id
+    subnet_id                     = azurerm_subnet.tfeazytraining-subnet[each.key].id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.tfeazytraining.id
+    public_ip_address_id          = azurerm_public_ip.tfeazytraining[each.key].id
   }
 
   tags = {
@@ -64,17 +81,19 @@ resource "azurerm_network_interface" "tfeazytraining-vnic" {
 
 # Create a Network Interface Security Group association
 resource "azurerm_network_interface_security_group_association" "tfeazytraining-assoc" {
-  network_interface_id      = azurerm_network_interface.tfeazytraining-vnic.id
-  network_security_group_id = azurerm_network_security_group.tfeazytraining-sg.id
+  for_each = local.regions
+  network_interface_id      = azurerm_network_interface.tfeazytraining-vnic[each.key].id
+  network_security_group_id = azurerm_network_security_group.tfeazytraining-nsg[each.key].id
 }
 
 # Create a Virtual Machine
 resource "azurerm_linux_virtual_machine" "tfeazytraining-vm" {
+  for_each = local.regions
   name                            = "my-eazytraining-vm"
-  location                        = azurerm_resource_group.tfeazytraining-gp.location
-  resource_group_name             = azurerm_resource_group.tfeazytraining-gp.name
-  network_interface_ids           = [azurerm_network_interface.tfeazytraining-vnic.id]
-  size                            = ""
+  location                        = azurerm_resource_group.tfeazytraining-gp[each.key].location
+  resource_group_name             = azurerm_resource_group.tfeazytraining-gp[each.key].name
+  network_interface_ids           = [azurerm_network_interface.tfeazytraining-vnic[each.key].id]
+  size                            = "Standard_B1s"
   computer_name                   = "myvm"
   admin_username                  = "azureuser"
   admin_password                  = "Password1234!"
