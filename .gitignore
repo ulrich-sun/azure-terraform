@@ -9,8 +9,8 @@ crash.log
 *.tfplan
 
 # fichier de variables sensibles (si tu les crées)
-terraform.tfvars
-*.tfvars
+# terraform.tfvars
+# *.tfvars
 
 # fichiers de lock (liés au provider)
 .terraform.lock.hcl
