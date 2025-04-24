@@ -1,7 +1,7 @@
 variable "resource_group_name" {
   description = "Nom du groupe de ressources"
   type        = string
-  default = "tfeazytraining-rg"
+  default     = "tfeazytraining-rg"
 }
 
 variable "location" {
@@ -34,7 +34,7 @@ variable "admin_password" {
 variable "storage_account_name" {
   description = "storage account"
   type        = string
-  default = "eazytrainingstorage23"
+  default     = "eazytrainingstorage23"
 }
 variable "storage_container_name" {
   description = "Nom du conteneur de stockage"

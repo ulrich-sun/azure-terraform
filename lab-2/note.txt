@@ -15,7 +15,7 @@ creer le fichier main.tf
 terraform init 
 terraform fmt 
 terraform validate 
-terraform apply -auto-approve
+terraform apply
 
 une fois le labs termine : terraform destroy -auto-approve 
 

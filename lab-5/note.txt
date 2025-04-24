@@ -20,7 +20,7 @@ Commande :
 az group create --name tfeazytraining-rg --location "West Europe"
 
 Description :
-Crée un groupe de ressources nommé "tfeazytraining-rg" dans la région "France Central".
+Crée un groupe de ressources nommé "tfeazytraining-rg" dans la région "West Europe".
 
 
 2. Création du compte de stockage Azure

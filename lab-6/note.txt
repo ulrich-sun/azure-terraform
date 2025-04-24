@@ -20,11 +20,11 @@ az login
 
 2. Création du groupe de ressources
 -----------------------------------
-az group create --name my-terraform-rg --location "France Central"
+az group create --name my-terraform-rg --location "West Europe"
 
 3. Création du compte de stockage Azure
 ---------------------------------------
-az storage account create --name myeazytrainingstorage --resource-group my-terraform-rg --location "France Central" --sku Standard_LRS
+az storage account create --name myeazytrainingstorage --resource-group my-terraform-rg --location "West Europe" --sku Standard_LRS
 
 4. Création du conteneur dans le compte de stockage
 ----------------------------------------------------
@@ -66,4 +66,4 @@ Via Terraform :
 terraform destroy -auto-approve 
 
 Via Azure CLI :
-az group delete --name tfeazytraining-rg --yes --no-wait
+az group delete --name my-terraform-rg --yes --no-wait
