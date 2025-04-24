@@ -1,0 +1,9 @@
+Telecharger le fichier zip de terraform 
+-https://www.terraform.io/downloads.html
+
+Installez les plugins sur votre IDE 
+- Hashicorp Terraform 
+
+
+
+
