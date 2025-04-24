@@ -1,12 +1,7 @@
-resource "azurerm_resource_group" "tfeazytraining-gp" {
-  name     = var.resource_group_name
-  location = var.location
-}
-
 resource "azurerm_virtual_network" "tfeazytraining-vnet" {
   name                = "my-eazytraining-vnet"
-  location            = azurerm_resource_group.tfeazytraining-gp.location
-  resource_group_name = azurerm_resource_group.tfeazytraining-gp.name
+  location            = var.location
+  resource_group_name = var.resource_group_name
   address_space       = ["10.0.0.0/16"]
 
   tags = {
@@ -16,15 +11,15 @@ resource "azurerm_virtual_network" "tfeazytraining-vnet" {
 
 resource "azurerm_subnet" "tfeazytraining-subnet" {
   name                 = "my-eazytraining-subnet"
-  resource_group_name  = azurerm_resource_group.tfeazytraining-gp.name
+  resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.tfeazytraining-vnet.name
   address_prefixes     = ["10.0.2.0/24"]
 }
 
 resource "azurerm_public_ip" "tfeazytraining-ip" {
   name                = "my-eazytraining-public-ip"
-  location            = azurerm_resource_group.tfeazytraining-gp.location
-  resource_group_name = azurerm_resource_group.tfeazytraining-gp.name
+  location            = var.location
+  resource_group_name = var.resource_group_name
   allocation_method   = "Static"
 
   tags = {
@@ -34,8 +29,8 @@ resource "azurerm_public_ip" "tfeazytraining-ip" {
 
 resource "azurerm_network_security_group" "tfeazytraining-nsg" {
   name                = "my-eazytraining-nsg"
-  location            = azurerm_resource_group.tfeazytraining-gp.location
-  resource_group_name = azurerm_resource_group.tfeazytraining-gp.name
+  location            = var.location
+  resource_group_name = var.resource_group_name
 
   security_rule {
     name                       = "Allow-HTTP"
@@ -68,8 +63,8 @@ resource "azurerm_network_security_group" "tfeazytraining-nsg" {
 
 resource "azurerm_network_interface" "tfeazytraining-vnic" {
   name                = "my-eazytraining-nic"
-  location            = azurerm_resource_group.tfeazytraining-gp.location
-  resource_group_name = azurerm_resource_group.tfeazytraining-gp.name
+  location            = var.location
+  resource_group_name = var.resource_group_name
 
   ip_configuration {
     name                          = "my-eazytraining-nic-ip"
@@ -90,8 +85,8 @@ resource "azurerm_network_interface_security_group_association" "tfeazytraining-
 
 resource "azurerm_linux_virtual_machine" "tfeazytraining-vm" {
   name                            = "my-eazytraining-vm"
-  location                        = azurerm_resource_group.tfeazytraining-gp.location
-  resource_group_name             = azurerm_resource_group.tfeazytraining-gp.name
+  location                        = var.location
+  resource_group_name             = var.resource_group_name
   network_interface_ids           = [azurerm_network_interface.tfeazytraining-vnic.id]
   size                            = var.instance_template
   computer_name                   = "myvm"
@@ -117,16 +112,3 @@ resource "azurerm_linux_virtual_machine" "tfeazytraining-vm" {
   }
 }
 
-resource "azurerm_storage_account" "eazytraining-sa" {
-  name                     = "eazytrainingstorage23"
-  resource_group_name      = azurerm_resource_group.tfeazytraining-gp.name
-  location                 = azurerm_resource_group.tfeazytraining-gp.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-}
-
-resource "azurerm_storage_container" "eazytraining-container" {
-  name                  = "eazytraining-container"
-  storage_account_name  = azurerm_storage_account.eazytraining-sa.name
-  container_access_type = "private"
-}

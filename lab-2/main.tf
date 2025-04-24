@@ -30,6 +30,7 @@ resource "azurerm_public_ip" "tfeazytraining-ip" {
   location            = azurerm_resource_group.tfeazytraining-gp.location
   resource_group_name = azurerm_resource_group.tfeazytraining-gp.name
   allocation_method   = "Dynamic"
+  sku                 = "Basic"
 
   tags = {
     environment = "my-eazytraining-env"
